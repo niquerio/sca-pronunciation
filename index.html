@@ -1,0 +1,82 @@
+<html><head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Pronunciation Example</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+      
+      <!-- Optional theme -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+      <script>
+          $(window).load(function(){
+             context = new AudioContext();
+             var context, source, buffer, fast = 'audio/fast.mp3', slow = 'audio/slow.mp3';
+             $(".slow").click(function(){
+                 start(slow);
+             });
+             $(".fast").click(function(){
+
+                 start(fast);
+             });
+
+             function start(url) {
+                 // Note: this will load asynchronously
+                 var request = new XMLHttpRequest();
+                 request.open("GET", url, true);
+                 request.responseType = "arraybuffer"; // Read as binary data
+
+                 // Asynchronous callback
+                 request.onload = function() {
+                     var data = request.response;
+
+                     audioRouting(data);
+                 };
+
+                 request.send();
+             }
+
+             // Tell the Source when to play
+             function playSound() {
+                 source.start(context.currentTime); // play the source immediately
+             }
+             
+             // Tell the Source when to stop
+             function stop() {
+                 source.stop(context.currentTime); // stop the source immediately
+             }
+
+             function audioRouting(data) {
+                 source = context.createBufferSource(); // Create sound source
+                 context.decodeAudioData(data, function(buffer){ // Create source buffer from raw binary
+                 source.buffer = buffer; // Add buffered data to object
+                 source.connect(context.destination); // Connect sound source to output
+                 playSound(source); // Pass the object to the play function
+                 });
+             }
+          })
+
+      </script>
+    </head>
+    <body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Jadwiga (Jadzia) Krzyzanowska</h3>
+                <dl class="dl-horizontal">
+                    <dt><abbr title="International Phonetic Alphabet">IPA<abbr></dt>
+                            <dd>jad.ˈvi.ga (ˈja.dʒa) ˈkʃɨ.za.nɔf.ska</dd>
+                            <dt><abbr title="English Approximation">EA</abbr></dt>
+                            <dd>yah.DVEE.gah (YAH.juh) KSHY.za.nawf.skah</dd>
+                            <dt>Slow</dt>
+                            <dd><button class="slow btn btn-default btn-sm"><span class="glyphicon glyphicon-play"></span</button></dd>
+                            <dt>Fast</dt>
+                            <dd><button class="fast btn btn-default btn-sm"><span class="glyphicon glyphicon-play"></span</button></dd>
+                         
+                        </dl>
+            </div>
+        </div>
+    </div>
+    </body>
+</html>
